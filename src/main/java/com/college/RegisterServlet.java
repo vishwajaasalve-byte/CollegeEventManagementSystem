@@ -15,31 +15,34 @@ public class RegisterServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-
         String name = request.getParameter("studentName");
         String email = request.getParameter("email");
         String department = request.getParameter("department");
         String event = request.getParameter("eventName");
 
-        if (name == null || email == null || department == null || event == null ||
-            name.isBlank() || email.isBlank() || department.isBlank() || event.isBlank()) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Please complete every field.");
+        if (blank(name) || blank(email) || blank(department) || blank(event)) {
+            request.setAttribute("errorMessage", "Please complete every field and try again.");
+            request.getRequestDispatcher("/index.jsp").forward(request, response);
             return;
         }
 
         String sql = "INSERT INTO registrations (student_name, email, department, event_name) VALUES (?, ?, ?, ?)";
-        try (Connection con = DB.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = DB.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, name.trim());
             ps.setString(2, email.trim());
-            ps.setString(3, department);
-            ps.setString(4, event);
+            ps.setString(3, department.trim());
+            ps.setString(4, event.trim());
             ps.executeUpdate();
-            response.sendRedirect(request.getContextPath() + "/?success=1");
+            response.sendRedirect(request.getContextPath() + "/?success=1#register");
         } catch (Exception e) {
             getServletContext().log("Registration could not be saved", e);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                "Could not save registration. Check that MySQL is running and DB.java has the correct password.");
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            request.setAttribute("errorMessage", "Registration could not be saved. Check MySQL and DB.java settings.");
+            request.getRequestDispatcher("/index.jsp").forward(request, response);
         }
+    }
+
+    private boolean blank(String value) {
+        return value == null || value.isBlank();
     }
 }
