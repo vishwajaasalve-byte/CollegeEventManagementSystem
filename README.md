@@ -1,45 +1,33 @@
 # College Event Management System
 
-Beginner-friendly mini project using Java 17, HTML, CSS, MySQL, JDBC, Maven and Apache Tomcat 10.1.
+A mini project using **Java 17, JSP, Jakarta Servlets, JSTL, JDBC, MySQL, Maven and Apache Tomcat 10.1**.
 
-## Features
-- Modern home page
-- Event registration form
-- Saves registration data to MySQL
-- Admin page lists saved registrations
+## Pages and flow
+- `index.jsp`: CampusConnect landing page and event registration form.
+- `RegisterServlet.java`: validates form fields and inserts registration into MySQL.
+- `AdminServlet.java`: reads registration rows from MySQL and forwards them to JSP.
+- `admin.jsp`: displays the saved registration records using JSTL.
+- `DB.java`: shared JDBC connection.
+- `style.css`: responsive styling for the pages.
 
 ## Requirements
-- JDK 17 or newer
-- MySQL Server (Workbench is optional)
-- Apache Maven
+- JDK 17+
+- Apache Maven 3.9+
+- MySQL Server
 - Apache Tomcat 10.1
-- VS Code (Java and Maven extensions recommended)
+- VS Code or another Java IDE
 
 ## Setup
-1. Open MySQL Workbench and run `database.sql`.
-2. Open `src/main/java/com/college/DB.java` and replace `YOUR_MYSQL_PASSWORD` with your local MySQL password. Do not commit a real password to GitHub.
-3. In VS Code, use **File → Open Folder** and select the repository/project folder that contains `pom.xml`.
-4. Open **Terminal → New Terminal**. In PowerShell, run `dir` and confirm that `pom.xml` is listed in the current directory.
-5. Run `mvn clean package`.
-6. When the build succeeds, find `target/CollegeEvents.war`.
-7. Copy that WAR file into Tomcat's `webapps` folder.
-8. Start Tomcat using `bin/startup.bat`.
-9. Open `http://localhost:8080/CollegeEvents/`.
-10. View saved registrations at `http://localhost:8080/CollegeEvents/admin`.
+1. Run `database.sql` in MySQL Workbench.
+2. Open `src/main/java/com/college/DB.java` and set your local MySQL password. Do not commit a real password to a public GitHub repository.
+3. Open the folder containing `pom.xml` in VS Code.
+4. Run `mvn -U clean package`.
+5. Copy `target/CollegeEvents.war` to Tomcat 10.1's `webapps` folder and start Tomcat.
+6. Open `http://localhost:8080/CollegeEvents/`.
+7. Register a sample entry, then open `http://localhost:8080/CollegeEvents/admin` to view the MySQL records.
 
-## Fix for "there is no POM in this directory"
-This error means Maven was started from a folder that does not contain `pom.xml`. Open the project folder itself (not its parent folder), or change to the correct directory in PowerShell before running Maven. For example:
+## Maven download error
+If Maven reports that it cannot transfer a plugin from Maven Central, verify that the URL `https://repo.maven.apache.org/maven2/` is reachable in your browser, then run `mvn -U clean package`. Check proxy/firewall settings if the download remains blocked.
 
-```powershell
-cd "C:\path\to\CollegeEventManagementSystem"
-dir
-mvn clean package
-```
-
-Replace the example path with your actual project path. The `dir` output must include `pom.xml`.
-
-## Troubleshooting
-- If `mvn` is not recognized, install Maven and make sure `mvn -version` works in a new terminal.
-- If Tomcat reports a deployment error, use Tomcat 10.1; this project uses Jakarta Servlet 6 and will not run on Tomcat 9 without changes.
-- MySQL Server must be running before registration.
-- The `/admin` page is a simple classroom demo page and has no login protection. Do not publish it publicly without adding authentication.
+## Note
+The admin page is intended for a local classroom demo and does not have authentication. Add login protection before deploying publicly.
