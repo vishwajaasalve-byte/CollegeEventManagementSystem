@@ -1,0 +1,14 @@
+# Maven output
+target/
+
+# IDE and operating-system files
+.vscode/
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Local environment files (never commit database passwords)
+.env
+.env.*
+!.env.example
